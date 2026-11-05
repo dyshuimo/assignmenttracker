@@ -52,9 +52,15 @@ class DataManager:
             due_date=due_date,
         )
 
-    def append(self, data: Subject | Assignment):
+    def append(self, data: Assignment):
         if isinstance(data, Assignment):
             self._appendAssignment(data)
+        else:
+            raise ValueError("Invalid data type. Must be Subject or Assignment.")
+
+    def delete(self, index: int):
+        if isinstance(index, int) and 0 <= index < len(self.assignments):
+            self.assignments.pop(index)
         else:
             raise ValueError("Invalid data type. Must be Subject or Assignment.")
 
