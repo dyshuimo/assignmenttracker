@@ -9,6 +9,8 @@ while True:
     1. Add a new assignment
     2. View all assignments
     3. Delete an assignment
+    4. Mark an assignment as completed
+    5. Exit
     """)
     choice = input("Enter your choice: ")
     if choice == "1":
@@ -37,6 +39,8 @@ while True:
                 print(f"Due Date: {assignment.due_date}")
                 print(f"Subject: {assignment.subject.name}")
                 print(f"Description: {assignment.description}")
+                print("Completed" if assignment.completed else "Not Completed")
+
                 print("--------------")
     elif choice == "3":
         data_manager._load_from_file()
@@ -48,5 +52,19 @@ while True:
             print("Assignment deleted.")
         else:
             print("Invalid index. Please try again.")
+    elif choice == "4":
+        data_manager._load_from_file()
+        data = data_manager.assignments
+        index = (
+            int(input("Enter the number of the assignment to mark as completed: ")) - 1
+        )
+        if 0 <= index < len(data):
+            data_manager.setAsCompleted(index)
+            data_manager._write_to_file()
+            print("Assignment marked as completed.")
+        else:
+            print("Invalid index. Please try again.")
+    elif choice == "5":
+        break
     else:
         print("Invalid choice. Please try again.")

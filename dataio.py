@@ -17,6 +17,7 @@ class Assignment:
     description: str = ""
     subject: Subject = Subject(name="")
     due_date: date | None = None
+    completed: bool = False
 
 
 class DataManager:
@@ -36,6 +37,7 @@ class DataManager:
             "description": obj.description,
             "subject": {"name": obj.subject.name},
             "due_date": obj.due_date.isoformat() if obj.due_date else None,
+            "completed": obj.completed,
         }
 
     @staticmethod
@@ -50,11 +52,18 @@ class DataManager:
             description=data["description"],
             subject=subject,
             due_date=due_date,
+            completed=data["completed"],
         )
 
     def append(self, data: Assignment):
         if isinstance(data, Assignment):
             self._appendAssignment(data)
+        else:
+            raise ValueError("Invalid data type. Must be Subject or Assignment.")
+
+    def setAsCompleted(self, index: int):
+        if isinstance(index, int) and 0 <= index < len(self.assignments):
+            self.assignments[index].completed = True
         else:
             raise ValueError("Invalid data type. Must be Subject or Assignment.")
 
