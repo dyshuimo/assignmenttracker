@@ -26,4 +26,3 @@ def is_overdue(due: date | None) -> bool:
         return False
     today = date.today()
     return due < today
-
