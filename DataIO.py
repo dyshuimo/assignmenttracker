@@ -12,6 +12,9 @@ class DataManager:
         self.assignments: list[Assignment] = []
         self.path = path
 
+    def read(self):
+        return self.assignments
+
     def append(self, data: Assignment):
         if isinstance(data, Assignment):
             self.assignments.append(data)
