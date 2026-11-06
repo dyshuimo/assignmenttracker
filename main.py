@@ -1,4 +1,4 @@
-from command import main
+from Command import main
 
 if __name__ == "__main__":
     main()
