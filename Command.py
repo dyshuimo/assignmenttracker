@@ -2,6 +2,56 @@ from datetime import date
 from Assignment import Assignment
 from DataIO import DataManager
 
+
+def display_assignments(manager):
+    print("\nAssignments:")
+
+    try:
+        with open("assignments.txt", "r") as file:
+            assignments = [line.strip() for line in file if line.strip()]
+    except FileNotFoundError:
+        assignments = []
+
+    if not assignments:
+        print("No assignments yet.")
+        return
+
+    for number, assignment in enumerate(assignments, start=1):
+        print(f"{number}. {assignment}")
+        
+def add_assignment(manager):
+    title = input("Title: ")
+    subject = input("Subject: ")
+    description = input("Description: ")
+    due_date_text = input("Due date (YYYY-MM-DD, or leave blank): ")
+    if due_date_text:
+        try:
+            due_date = date.fromisoformat(due_date_text)
+        except ValueError:
+            print("Enter the date as YYYY-MM-DD.")
+            return
+    else:
+        due_date = None
+
+    assignment = Assignment(
+        title=title,
+        subject=subject,
+        description=description,
+        due_date=due_date,
+    )
+    manager.append(assignment)
+    print("Assignment saved.")
+
+def remove_assignment(manager):
+    display_assignments(manager)
+    if manager.assignments:
+        try:
+            number = int(input("Assignment number to delete: ")) - 1
+            manager.delete(number)
+            print("Assignment deleted.")
+        except ValueError:
+            print("Enter a valid assignment number.")
+
 def validate_due_date(input_str: str) -> date | None:
     raw_input = input_str.strip()
     if raw_input == "":
@@ -42,35 +92,34 @@ def print_assignment_status(assn: Assignment):
     else:
         print("")
 
+def main():
+    manager = DataManager("assignments.txt")
 
-def add_assignment(data_manager: DataManager):
-    title = input("Assignment title: ").strip()
-    desc = input("Description: ").strip()
-    subject = input("Subject name: ").strip()
-    due = prompt_due_date()
+    while True:
+        print("=== Assignment Tracker ===")
+        print("1. Show assignments")
+        print("2. Add assignment")
+        print("3. Mark assignment complete")
+        print("4. Delete assignment")
+        print("0. Exit")
+        choice = input("Choose an option: ")
 
-
-    if len(data_manager.assignments) == 0:
-        new_id = 1
-    else:
-        new_id = max(a.id for a in data_manager.assignments) + 1
-
-    new_task = Assignment(
-        id=new_id,
-        title=title,
-        description=desc,
-        subject=subject,
-        due_date=due,
-        completed=False
-    )
-    data_manager.append(new_task)
-    print("Assignment added successfully!")
-
-def view_all_assignments(data_manager: DataManager):
-    if len(data_manager.assignments) == 0:
-        print("No assignments saved yet.")
-        return
-    for idx, task in enumerate(data_manager.assignments):
-        print(f"\n[{idx+1}] ID:{task.id} | Title: {task.title} | Subject: {task.subject}")
-        print(f"Description: {task.description} | Due: {task.due_date}")
-        print_assignment_status(task)
+        if choice == "1":
+            display_assignments(manager)
+        elif choice == "2":
+            add_assignment(manager)
+        elif choice == "3":
+            display_assignments(manager)
+            if manager.assignments:
+                try:
+                    number = int(input("Assignment number: ")) - 1
+                    manager.markCompleted(number)
+                    print("Assignment marked complete.")
+                except ValueError:
+                    print("Enter a valid assignment number.")
+        elif choice == "4":
+            remove_assignment(manager)
+        elif choice == "0":
+            break
+        else:
+            print("Choose one of the listed options.")
