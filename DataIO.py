@@ -83,10 +83,14 @@ class DataManager:
 
     def _stringToAssignments(self, assignments_str: list[str]) -> list[Assignment]:
         assignments_list = []
+
         for assignment_str in assignments_str:
-            assignment_dict = eval(assignment_str)
-            assignment = DataManager._dictToAssignment(assignment_dict)
-            assignments_list.append(assignment)
+            try:
+                assignment_dict = eval(assignment_str)
+                assignment = DataManager._dictToAssignment(assignment_dict)
+                assignments_list.append(assignment)
+            except Exception:
+                continue  # skip
 
         return assignments_list
 
