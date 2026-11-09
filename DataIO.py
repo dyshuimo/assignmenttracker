@@ -12,6 +12,15 @@ class DataManager:
         self.assignments: list[Assignment] = []
         self.path = path
 
+    def read(self):
+        try:
+            self._readFromFile()
+        except Exception as e:
+            print(
+                f"Error reading from file. The file may be corrupted.\nDetails:\n {e}"
+            )
+        return self.assignments
+
     def append(self, data: Assignment):
         if isinstance(data, Assignment):
             self.assignments.append(data)
@@ -77,6 +86,7 @@ class DataManager:
             assignment_dict = eval(assignment_str)
             assignment = DataManager._dictToAssignment(assignment_dict)
             assignments_list.append(assignment)
+
         return assignments_list
 
     def _writeToFile(self):
