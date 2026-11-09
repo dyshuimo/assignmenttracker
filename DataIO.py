@@ -100,6 +100,9 @@ class DataManager:
                     file.write(assignment_str)
 
     def _readFromFile(self):
-        with open(self.path, "r") as file:
-            assignments_str = file.read().splitlines()
-        self.assignments = self._stringToAssignments(assignments_str)
+        try:
+            with open(self.path, "r") as file:
+                assignments_str = file.read().splitlines()
+            self.assignments = self._stringToAssignments(assignments_str)
+        except FileNotFoundError:
+            self.assignments = []
