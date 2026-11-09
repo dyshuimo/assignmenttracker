@@ -77,6 +77,21 @@ def is_overdue(due: date | None) -> bool:
     today = date.today()
     return due < today
 
+def get_status_display(is_completed: bool) -> str:
+    if is_completed:
+        return "Completed"
+    else:
+        return "Incomplete"
+
+def print_assignment_status(assn: Assignment):
+    status_text = get_status_display(assn.completed)
+    overdue = is_overdue(assn.due_date)
+    print(f"Status: {status_text}", end="")
+    if overdue and not assn.completed:
+        print(" OVERDUE")
+    else:
+        print("")
+
 def main():
     manager = DataManager("assignments.txt")
 
