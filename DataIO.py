@@ -32,6 +32,7 @@ class DataManager:
     def markCompleted(self, index: int):
         if isinstance(index, int) and 0 <= index < len(self.assignments):
             self.assignments[index].completed = True
+            self._writeToFile()
         else:
             raise ValueError("Invalid data type. Must be Subject or Assignment.")
 
