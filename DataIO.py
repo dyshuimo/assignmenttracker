@@ -33,13 +33,17 @@ class DataManager:
         if isinstance(index, int) and 0 <= index < len(self.assignments):
             self.assignments[index].completed = True
         else:
-            raise ValueError("Invalid data type. Must be Subject or Assignment.")
+            raise IndexError(
+                "Invalid index. Must be an integer within the range of assignments."
+            )
 
     def delete(self, index: int):
         if isinstance(index, int) and 0 <= index < len(self.assignments):
             del self.assignments[index]
         else:
-            raise IndexError("Index out of range. Cannot delete assignment.")
+            raise IndexError(
+                "Invalid index. Must be an integer within the range of assignments."
+            )
 
     @staticmethod
     def _assignmentToDict(assignment: Assignment) -> dict:
