@@ -11,6 +11,7 @@ class DataManager:
     def __init__(self, path):
         self.assignments: list[Assignment] = []
         self.path = path
+        self._readFromFile()
 
     def read(self):
         try:
