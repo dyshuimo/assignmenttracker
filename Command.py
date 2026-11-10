@@ -3,7 +3,7 @@ from Assignment import Assignment
 from DataIO import DataManager
 
 
-def view_all_assignments(data_manager: DataManager):
+def viewAllAssignments(data_manager: DataManager):
     print("\nAssignments:")
     assignments = data_manager.read()
 
@@ -11,65 +11,65 @@ def view_all_assignments(data_manager: DataManager):
         print("No assignments saved yet.")
         return
 
-    for index in range(len(assignments)):
-        task = assignments[index]
-        task_data = DataManager._assignmentToDict(task)
-        print(
-            f"\n[{index + 1}] ID:{task_data['id']} | "
-            f"Title: {task_data['title']} | Subject: {task_data['subject']}"
-        )
-        print(
-            f"Description: {task_data['description']} | "
-            f"Due: {task_data['due_date']}"
-        )
-        print_assignment_status(task)
+    for index, assignment in enumerate(assignments):
+        print(f"Assignment: {index + 1}\n{assignment}\n{overdueStatus(assignment)}\n")
 
 
-def add_assignment(data_manager: DataManager):
+def addAssignment(data_manager: DataManager):
     title = input("Assignment title: ").strip()
     description = input("Description: ").strip()
     subject = input("Subject name: ").strip()
-    due = prompt_due_date()
-
-    new_id = 1
-    assignments = data_manager.read()
-    for existing_assignment in assignments:
-        if existing_assignment.id >= new_id:
-            new_id = existing_assignment.id + 1
+    due = promptDueDate()
 
     due_date = None
     if due:
-        due_date = due.isoformat()
+        due_date = date.fromisoformat(due.isoformat())
 
-    assignment_data = {
-        "id": new_id,
-        "title": title,
-        "description": description,
-        "subject": subject,
-        "due_date": due_date,
-        "completed": False,
-    }
-    assignment = DataManager._dictToAssignment(assignment_data)
+    assignment = Assignment(
+        title=title,
+        description=description,
+        subject=subject,
+        due_date=due_date,
+        completed=False,
+    )
+
     data_manager.append(assignment)
     print("Assignment added successfully!")
 
 
-def remove_assignment(data_manager: DataManager):
-    view_all_assignments(data_manager)
+def removeAssignment(data_manager: DataManager):
+    viewAllAssignments(data_manager)
     assignments = data_manager.read()
     if assignments:
         try:
             number = int(input("Assignment number to delete: ")) - 1
             data_manager.delete(number)
-            data_manager._writeToFile()
             print("Assignment deleted.")
-        except ValueError:
+        except (
+            ValueError
+        ):  # this can be deleted after the new DataManager update is merged
             print("Enter a valid assignment number.")
         except IndexError:
             print("Enter a valid assignment number.")
 
 
-def validate_due_date(input_str: str) -> date | None:
+def markAssignmentComplete(data_manager: DataManager):
+    viewAllAssignments(data_manager)
+    assignments = data_manager.read()
+    if assignments:
+        try:
+            number = int(input("Assignment number to mark complete: ")) - 1
+            data_manager.markCompleted(number)
+            print("Assignment marked complete.")
+        except (
+            ValueError
+        ):  # this can be deleted after the new DataManager update is merged
+            print("Enter a valid assignment number.")
+        except IndexError:
+            print("Enter a valid assignment number.")
+
+
+def validateDueDate(input_str: str) -> date | None:
     raw_input = input_str.strip()
     if raw_input == "":
         return None
@@ -79,68 +79,57 @@ def validate_due_date(input_str: str) -> date | None:
     except ValueError:
         raise ValueError("Invalid date. Please use format YYYY-MM-DD")
 
-def prompt_due_date() -> date | None:
+
+def promptDueDate() -> date | None:
     while True:
         user_text = input("Enter due date (YYYY-MM-DD, press ENTER for NO due date): ")
         try:
-            valid_date = validate_due_date(user_text)
+            valid_date = validateDueDate(user_text)
             return valid_date
         except ValueError as err:
             print(err)
 
-def is_overdue(due: date | None) -> bool:
+
+def isOverdue(assignment: Assignment | None) -> bool:
+    due = assignment.due_date if assignment else None
     if due is None:
         return False
     today = date.today()
     return due < today
 
-def get_status_display(is_completed: bool) -> str:
-    if is_completed:
-        return "Completed"
-    else:
-        return "Incomplete"
 
-def print_assignment_status(assn: Assignment):
-    status_text = get_status_display(assn.completed)
-    overdue = is_overdue(assn.due_date)
-    print(f"Status: {status_text}", end="")
-    if overdue and not assn.completed:
-        print(" OVERDUE")
+def overdueStatus(assignment: Assignment) -> str:
+    if isOverdue(assignment) and not assignment.completed:
+        return "Overdue"
     else:
-        print("")
+        return "On time"
+
+
+def menu():
+    print("=== Assignment Tracker ===")
+    print("1. Show assignments")
+    print("2. Add assignment")
+    print("3. Mark assignment complete")
+    print("4. Delete assignment")
+    print("0. Exit")
+
 
 def main():
     manager = DataManager("assignments.txt")
 
     while True:
-        print("=== Assignment Tracker ===")
-        print("1. Show assignments")
-        print("2. Add assignment")
-        print("3. Mark assignment complete")
-        print("4. Delete assignment")
-        print("0. Exit")
+        menu()
         choice = input("Choose an option: ")
 
         if choice == "1":
-            view_all_assignments(manager)
-        if choice == "2":
-            add_assignment(manager)
-        if choice == "3":
-            view_all_assignments(manager)
-            assignments = manager.read()
-            if assignments:
-                try:
-                    number = int(input("Assignment number: ")) - 1
-                    manager.markCompleted(number)
-                    manager._writeToFile()
-                    print("Assignment marked complete.")
-                except ValueError:
-                    print("Enter a valid assignment number.")
-                except IndexError:
-                    print("Enter a valid assignment number.")
-        if choice == "4":
-            remove_assignment(manager)
-        if choice == "0":
+            viewAllAssignments(manager)
+        elif choice == "2":
+            addAssignment(manager)
+        elif choice == "3":
+            markAssignmentComplete(manager)
+        elif choice == "4":
+            removeAssignment(manager)
+        elif choice == "0":
             break
-        if choice not in ("0", "1", "2", "3", "4"):
-            print("Choose one of the listed options.")
+        else:
+            print("Invalid Choice. Choose one of the listed options.")

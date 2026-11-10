@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 import uuid
 
 
 @dataclass
 class Assignment:
-    id: int = uuid.uuid4().int
+    id: int = field(default_factory=lambda: uuid.uuid4().int)  # generate an uuid
     title: str = ""
     description: str = ""
     subject: str = ""

@@ -32,12 +32,14 @@ class DataManager:
     def markCompleted(self, index: int):
         if isinstance(index, int) and 0 <= index < len(self.assignments):
             self.assignments[index].completed = True
+            self._writeToFile()
         else:
             raise ValueError("Invalid data type. Must be Subject or Assignment.")
 
     def delete(self, index: int):
         if isinstance(index, int) and 0 <= index < len(self.assignments):
             del self.assignments[index]
+            self._writeToFile()
         else:
             raise IndexError("Index out of range. Cannot delete assignment.")
 
