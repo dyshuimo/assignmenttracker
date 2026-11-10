@@ -1,6 +1,6 @@
 from datetime import date
 from Assignment import Assignment
-from DataIO import DataManager
+from DataIO import DataManager, FileCorruptedError
 
 
 def viewAllAssignments(data_manager: DataManager):
@@ -105,6 +105,18 @@ def overdueStatus(assignment: Assignment) -> str:
         return "On time"
 
 
+def handleCorruptedFile(storagePath: str):
+    print("Error reading from file. The file may be corrupted.")
+    print("What do you want to do?")
+    print("1. Reset the file (this will delete all assignments)")
+    print("2. Exit the program")
+    choice = input("Choose an option: ")
+    if choice == "1":
+        DataManager.unsafeWipeFile(storagePath)
+    elif choice == "2":
+        exit()
+
+
 def menu():
     print("=== Assignment Tracker ===")
     print("1. Show assignments")
@@ -114,22 +126,33 @@ def menu():
     print("0. Exit")
 
 
-def main():
-    manager = DataManager("assignments.txt")
+def main(storagePath: str = "assignments.txt"):
+    while True:
+        try:
+            manager = DataManager(storagePath)
+            break
+        except FileCorruptedError:
+            handleCorruptedFile(storagePath)
 
     while True:
         menu()
         choice = input("Choose an option: ")
 
-        if choice == "1":
-            viewAllAssignments(manager)
-        elif choice == "2":
-            addAssignment(manager)
-        elif choice == "3":
-            markAssignmentComplete(manager)
-        elif choice == "4":
-            removeAssignment(manager)
-        elif choice == "0":
-            break
-        else:
-            print("Invalid Choice. Choose one of the listed options.")
+        try:
+            if choice == "1":
+                viewAllAssignments(manager)
+            elif choice == "2":
+                addAssignment(manager)
+            elif choice == "3":
+                markAssignmentComplete(manager)
+            elif choice == "4":
+                removeAssignment(manager)
+            elif choice == "0":
+                break
+            else:
+                print("Invalid Choice. Choose one of the listed options.")
+        except FileCorruptedError:
+            handleCorruptedFile(storagePath)
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            exit()
