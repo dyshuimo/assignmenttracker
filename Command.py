@@ -3,54 +3,71 @@ from Assignment import Assignment
 from DataIO import DataManager
 
 
-def display_assignments(manager):
+def view_all_assignments(data_manager: DataManager):
     print("\nAssignments:")
+    assignments = data_manager.read()
 
-    try:
-        with open("assignments.txt", "r") as file:
-            assignments = [line.strip() for line in file if line.strip()]
-    except FileNotFoundError:
-        assignments = []
-
-    if not assignments:
-        print("No assignments yet.")
+    if len(assignments) == 0:
+        print("No assignments saved yet.")
         return
 
-    for number, assignment in enumerate(assignments, start=1):
-        print(f"{number}. {assignment}")
-        
-def add_assignment(manager):
-    title = input("Title: ")
-    subject = input("Subject: ")
-    description = input("Description: ")
-    due_date_text = input("Due date (YYYY-MM-DD, or leave blank): ")
-    if due_date_text:
-        try:
-            due_date = date.fromisoformat(due_date_text)
-        except ValueError:
-            print("Enter the date as YYYY-MM-DD.")
-            return
-    else:
-        due_date = None
+    for index in range(len(assignments)):
+        task = assignments[index]
+        task_data = DataManager._assignmentToDict(task)
+        print(
+            f"\n[{index + 1}] ID:{task_data['id']} | "
+            f"Title: {task_data['title']} | Subject: {task_data['subject']}"
+        )
+        print(
+            f"Description: {task_data['description']} | "
+            f"Due: {task_data['due_date']}"
+        )
+        print_assignment_status(task)
 
-    assignment = Assignment(
-        title=title,
-        subject=subject,
-        description=description,
-        due_date=due_date,
-    )
-    manager.append(assignment)
-    print("Assignment saved.")
 
-def remove_assignment(manager):
-    display_assignments(manager)
-    if manager.assignments:
+def add_assignment(data_manager: DataManager):
+    title = input("Assignment title: ").strip()
+    description = input("Description: ").strip()
+    subject = input("Subject name: ").strip()
+    due = prompt_due_date()
+
+    new_id = 1
+    assignments = data_manager.read()
+    for existing_assignment in assignments:
+        if existing_assignment.id >= new_id:
+            new_id = existing_assignment.id + 1
+
+    due_date = None
+    if due:
+        due_date = due.isoformat()
+
+    assignment_data = {
+        "id": new_id,
+        "title": title,
+        "description": description,
+        "subject": subject,
+        "due_date": due_date,
+        "completed": False,
+    }
+    assignment = DataManager._dictToAssignment(assignment_data)
+    data_manager.append(assignment)
+    print("Assignment added successfully!")
+
+
+def remove_assignment(data_manager: DataManager):
+    view_all_assignments(data_manager)
+    assignments = data_manager.read()
+    if assignments:
         try:
             number = int(input("Assignment number to delete: ")) - 1
-            manager.delete(number)
+            data_manager.delete(number)
+            data_manager._writeToFile()
             print("Assignment deleted.")
         except ValueError:
             print("Enter a valid assignment number.")
+        except IndexError:
+            print("Enter a valid assignment number.")
+
 
 def validate_due_date(input_str: str) -> date | None:
     raw_input = input_str.strip()
@@ -105,21 +122,25 @@ def main():
         choice = input("Choose an option: ")
 
         if choice == "1":
-            display_assignments(manager)
-        elif choice == "2":
+            view_all_assignments(manager)
+        if choice == "2":
             add_assignment(manager)
-        elif choice == "3":
-            display_assignments(manager)
-            if manager.assignments:
+        if choice == "3":
+            view_all_assignments(manager)
+            assignments = manager.read()
+            if assignments:
                 try:
                     number = int(input("Assignment number: ")) - 1
                     manager.markCompleted(number)
+                    manager._writeToFile()
                     print("Assignment marked complete.")
                 except ValueError:
                     print("Enter a valid assignment number.")
-        elif choice == "4":
+                except IndexError:
+                    print("Enter a valid assignment number.")
+        if choice == "4":
             remove_assignment(manager)
-        elif choice == "0":
+        if choice == "0":
             break
-        else:
+        if choice not in ("0", "1", "2", "3", "4"):
             print("Choose one of the listed options.")
