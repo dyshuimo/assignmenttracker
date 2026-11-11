@@ -12,7 +12,9 @@ def viewAllAssignments(data_manager: DataManager):
         return
 
     for index, assignment in enumerate(assignments):
-        print(f"Assignment: {index + 1}\n{assignment}\n{overdueStatus(assignment)}\n")
+        print(
+            f"Assignment: {index + 1}\n{assignment}\n{'Overdue' if isOverdue(assignment) else 'On time'}\n"
+        )
 
 
 def addAssignment(data_manager: DataManager):
@@ -21,9 +23,7 @@ def addAssignment(data_manager: DataManager):
     subject = input("Subject name: ").strip()
     due = promptDueDate()
 
-    due_date = None
-    if due:
-        due_date = date.fromisoformat(due.isoformat())
+    due_date = date.fromisoformat(due.isoformat()) if due else None
 
     assignment = Assignment(
         title=title,
@@ -45,10 +45,8 @@ def removeAssignment(data_manager: DataManager):
             number = int(input("Assignment number to delete: ")) - 1
             data_manager.delete(number)
             print("Assignment deleted.")
-        except (
-            ValueError
-        ):  # this can be deleted after the new DataManager update is merged
-            print("Enter a valid assignment number.")
+        except ValueError:
+            print("Please enter a valid number.")
         except IndexError:
             print("Enter a valid assignment number.")
 
@@ -61,10 +59,8 @@ def markAssignmentComplete(data_manager: DataManager):
             number = int(input("Assignment number to mark complete: ")) - 1
             data_manager.markCompleted(number)
             print("Assignment marked complete.")
-        except (
-            ValueError
-        ):  # this can be deleted after the new DataManager update is merged
-            print("Enter a valid assignment number.")
+        except ValueError:
+            print("Please enter a valid number.")
         except IndexError:
             print("Enter a valid assignment number.")
 
@@ -90,19 +86,13 @@ def promptDueDate() -> date | None:
             print(err)
 
 
-def isOverdue(assignment: Assignment | None) -> bool:
+def isOverdue(assignment: Assignment) -> bool:
     due = assignment.due_date if assignment else None
     if due is None:
         return False
-    today = date.today()
-    return due < today
-
-
-def overdueStatus(assignment: Assignment) -> str:
-    if isOverdue(assignment) and not assignment.completed:
-        return "Overdue"
     else:
-        return "On time"
+        today = date.today()
+        return (due < today) and (not assignment.completed)
 
 
 def handleCorruptedFile(storagePath: str):
