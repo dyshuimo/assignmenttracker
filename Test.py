@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
     def test_file_save_and_load(self):
         self.assertTrue(isConsistent())
 
-    def conversionTest(self):
+    def test_conversion(self):
         self.assertEqual(
             DataManager._assignmentToDict(assignments[0]),
             {
