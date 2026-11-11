@@ -14,12 +14,7 @@ class DataManager:
         self._readFromFile()
 
     def read(self):
-        try:
-            self._readFromFile()
-        except Exception as e:
-            print(
-                f"Error reading from file. The file may be corrupted.\nDetails:\n {e}"
-            )
+        self._readFromFile()
         return self.assignments
 
     def append(self, data: Assignment):
@@ -76,9 +71,10 @@ class DataManager:
         return assignment
 
     # for testing only
-    def _testMethodClear(self):
-        self.assignments.clear()
-        self._writeToFile()
+    @staticmethod
+    def unsafeWipeFile(path: str):
+        with open(path, "w") as file:
+            file.write("")
 
     def _assignmentsToString(self) -> list[str]:
         assignments_str = []
@@ -96,7 +92,9 @@ class DataManager:
                 assignment = DataManager._dictToAssignment(assignment_dict)
                 assignments_list.append(assignment)
             except Exception:
-                continue  # skip
+                raise FileCorruptedError(
+                    "The file is corrupted. Unable to parse assignment data."
+                )
 
         return assignments_list
 
@@ -113,6 +111,11 @@ class DataManager:
         try:
             with open(self.path, "r") as file:
                 assignments_str = file.read().splitlines()
+
             self.assignments = self._stringToAssignments(assignments_str)
         except FileNotFoundError:
             self.assignments = []
+
+
+class FileCorruptedError(Exception):
+    pass

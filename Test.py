@@ -3,7 +3,7 @@ from Assignment import Assignment
 from datetime import date
 
 data_manager = DataManager("assignments.txt")
-data_manager._testMethodClear()
+data_manager.unsafeWipeFile("assignments.txt")
 assignments = [
     Assignment(
         title="Linear Algebra Problem Set 7",
