@@ -13,7 +13,7 @@ class DataManager:
         self.path = path
         self._readFromFile()
 
-    def read(self):
+    def read(self) -> list[Assignment]:
         self._readFromFile()
         return self.assignments
 
