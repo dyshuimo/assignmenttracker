@@ -70,7 +70,6 @@ class DataManager:
         )
         return assignment
 
-    # for testing only
     @staticmethod
     def unsafeWipeFile(path: str):
         with open(path, "w") as file:

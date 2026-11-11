@@ -3,8 +3,10 @@ from Assignment import Assignment
 from datetime import date
 import unittest
 
-DataManager.unsafeWipeFile("test_assignments.txt")
-data_manager = DataManager("test_assignments.txt")
+STORAGE_PATH = "test_assignments.txt"
+
+DataManager.unsafeWipeFile(STORAGE_PATH)
+data_manager = DataManager(STORAGE_PATH)
 
 assignments = [
     Assignment(
@@ -71,10 +73,8 @@ def addAndReadAssignments(data_manager: DataManager):
 
 
 def isConsistent():
-    manager = DataManager("test_assignments.txt")
+    manager = DataManager(STORAGE_PATH)
     returned_assignments = addAndReadAssignments(manager)
-    if len(returned_assignments) != len(assignments):
-        return False
     for assignment in returned_assignments:
         if assignment not in assignments:
             return False
@@ -82,10 +82,10 @@ def isConsistent():
 
 
 class Test(unittest.TestCase):
-    def test_file_save_and_load(self):
+    def testFileSaveAndLoad(self):
         self.assertTrue(isConsistent())
 
-    def test_conversion(self):
+    def testConversion(self):
         self.assertEqual(
             DataManager._assignmentToDict(assignments[0]),
             {

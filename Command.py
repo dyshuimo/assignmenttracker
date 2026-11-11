@@ -16,7 +16,9 @@ def displayAssignments(assignments: list[Assignment]):
         return
 
     for index, assignment in enumerate(assignments):
-        print(f"Assignment: {index + 1}\n{assignment}\n{overdueStatus(assignment)}\n")
+        print(
+            f"Assignment: {index + 1}\n{assignment}\n{'Overdue' if isOverdue(assignment) else 'On time'}\n"
+        )
 
 
 def viewAllAssignmentsBySubject(data_manager: DataManager):
@@ -59,9 +61,7 @@ def addAssignment(data_manager: DataManager):
     subject = input("Subject name: ").strip()
     due = promptDueDate()
 
-    due_date = None
-    if due:
-        due_date = date.fromisoformat(due.isoformat())
+    due_date = date.fromisoformat(due.isoformat()) if due else None
 
     assignment = Assignment(
         title=title,
@@ -120,19 +120,13 @@ def promptDueDate() -> date | None:
             print(err)
 
 
-def isOverdue(assignment: Assignment | None) -> bool:
+def isOverdue(assignment: Assignment) -> bool:
     due = assignment.due_date if assignment else None
     if due is None:
         return False
-    today = date.today()
-    return due < today
-
-
-def overdueStatus(assignment: Assignment) -> str:
-    if isOverdue(assignment) and not assignment.completed:
-        return "Overdue"
     else:
-        return "On time"
+        today = date.today()
+        return (due < today) and (not assignment.completed)
 
 
 def handleCorruptedFile(storagePath: str):
