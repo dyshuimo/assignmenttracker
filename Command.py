@@ -7,6 +7,10 @@ def viewAllAssignments(data_manager: DataManager):
     print("\nAssignments:")
     assignments = data_manager.read()
 
+    displayAssignments(assignments)
+
+
+def displayAssignments(assignments: list[Assignment]):
     if len(assignments) == 0:
         print("No assignments saved yet.")
         return
@@ -15,6 +19,40 @@ def viewAllAssignments(data_manager: DataManager):
         print(
             f"Assignment: {index + 1}\n{assignment}\n{'Overdue' if isOverdue(assignment) else 'On time'}\n"
         )
+
+
+def viewAllAssignmentsBySubject(data_manager: DataManager):
+    assignments = data_manager.read()
+
+    subjects = {assignment.subject for assignment in assignments if assignment.subject}
+    subjects = sorted(subjects)
+
+    print("\nSubjects:")
+    if not subjects:
+        print("No subjects found.")
+        return
+
+    for index, subject in enumerate(subjects):
+        print(f"{index + 1}. {subject}")
+
+    selection = input("Choose a subject number: ").strip()
+
+    try:
+        number = int(selection) - 1
+        if number < 0 or number >= len(subjects):
+            raise IndexError
+        selected_subject = subjects[number]
+    except (ValueError, IndexError):
+        print("Enter a valid subject number.")
+        return
+
+    print(f"\nAssignments for {selected_subject}:")
+    assignments_by_subject = [
+        assignment
+        for assignment in assignments
+        if assignment.subject == selected_subject
+    ]
+    displayAssignments(assignments_by_subject)
 
 
 def addAssignment(data_manager: DataManager):
@@ -45,9 +83,7 @@ def removeAssignment(data_manager: DataManager):
             number = int(input("Assignment number to delete: ")) - 1
             data_manager.delete(number)
             print("Assignment deleted.")
-        except ValueError:
-            print("Please enter a valid number.")
-        except IndexError:
+        except (ValueError, IndexError):
             print("Enter a valid assignment number.")
 
 
@@ -59,9 +95,7 @@ def markAssignmentComplete(data_manager: DataManager):
             number = int(input("Assignment number to mark complete: ")) - 1
             data_manager.markCompleted(number)
             print("Assignment marked complete.")
-        except ValueError:
-            print("Please enter a valid number.")
-        except IndexError:
+        except (ValueError, IndexError):
             print("Enter a valid assignment number.")
 
 
@@ -113,6 +147,7 @@ def menu():
     print("2. Add assignment")
     print("3. Mark assignment complete")
     print("4. Delete assignment")
+    print("5. Show assignments by subject")
     print("0. Exit")
 
 
@@ -128,22 +163,18 @@ def main(storagePath: str = "assignments.txt"):
         menu()
         choice = input("Choose an option: ")
 
-        try:
-            if choice == "1":
-                viewAllAssignments(manager)
-            elif choice == "2":
-                addAssignment(manager)
-            elif choice == "3":
-                markAssignmentComplete(manager)
-            elif choice == "4":
-                removeAssignment(manager)
-            elif choice == "0":
-                break
-            else:
-                print("Invalid Choice. Choose one of the listed options.")
-        except FileCorruptedError:
-            handleCorruptedFile(storagePath)
-            manager = DataManager(storagePath)
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            exit()
+        if choice == "1":
+            viewAllAssignments(manager)
+        elif choice == "2":
+            addAssignment(manager)
+        elif choice == "3":
+            markAssignmentComplete(manager)
+        elif choice == "4":
+            removeAssignment(manager)
+        elif choice == "5":
+            viewAllAssignmentsBySubject(manager)
+        elif choice == "0":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid Choice. Choose one of the listed options.")
