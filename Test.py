@@ -73,6 +73,8 @@ def addAndReadAssignments(data_manager: DataManager):
 def isConsistent():
     manager = DataManager("test_assignments.txt")
     returned_assignments = addAndReadAssignments(manager)
+    if len(returned_assignments) != len(assignments):
+        return False
     for assignment in returned_assignments:
         if assignment not in assignments:
             return False
