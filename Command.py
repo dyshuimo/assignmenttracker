@@ -15,6 +15,44 @@ def viewAllAssignments(data_manager: DataManager):
         print(f"Assignment: {index + 1}\n{assignment}\n{overdueStatus(assignment)}\n")
 
 
+def viewALLAssignmentsBySubject(data_manager: DataManager):
+    assignments = data_manager.read()
+    subjects = []
+    for assignment in assignments:
+        if assignment.subject not in subjects:
+            subjects.append(assignment.subject)
+
+    print("\nSubjects:")
+    if not subjects:
+        print("No subjects found.")
+        return
+
+    index = 0
+    while index < len(subjects):
+        print(f"{index + 1}. {subjects[index]}")
+        index += 1
+
+    try:
+        selection = input("Choose a subject number: ")
+        number = int(selection) - 1
+    except ValueError:
+        print("Enter a valid subject number.")
+        return
+
+    if not 0 <= number < len(subjects):
+        print("Enter a valid subject number.")
+        return
+
+    selected_subject = subjects[number]
+    print(f"\nAssignments for {selected_subject}:")
+    index = 0
+    for assignment in assignments:
+        if assignment.subject == selected_subject:
+            index += 1
+            status = overdueStatus(assignment)
+            print(f"Assignment: {index}\n{assignment}\n{status}\n")
+
+
 def addAssignment(data_manager: DataManager):
     title = input("Assignment title: ").strip()
     description = input("Description: ").strip()
@@ -45,10 +83,6 @@ def removeAssignment(data_manager: DataManager):
             number = int(input("Assignment number to delete: ")) - 1
             data_manager.delete(number)
             print("Assignment deleted.")
-        except (
-            ValueError
-        ):  # this can be deleted after the new DataManager update is merged
-            print("Enter a valid assignment number.")
         except IndexError:
             print("Enter a valid assignment number.")
 
@@ -61,10 +95,6 @@ def markAssignmentComplete(data_manager: DataManager):
             number = int(input("Assignment number to mark complete: ")) - 1
             data_manager.markCompleted(number)
             print("Assignment marked complete.")
-        except (
-            ValueError
-        ):  # this can be deleted after the new DataManager update is merged
-            print("Enter a valid assignment number.")
         except IndexError:
             print("Enter a valid assignment number.")
 
@@ -111,6 +141,7 @@ def menu():
     print("2. Add assignment")
     print("3. Mark assignment complete")
     print("4. Delete assignment")
+    print("5. Show assignments by subject")
     print("0. Exit")
 
 
@@ -129,7 +160,10 @@ def main():
             markAssignmentComplete(manager)
         elif choice == "4":
             removeAssignment(manager)
+        elif choice == "5":
+            viewALLAssignmentsBySubject(manager)
         elif choice == "0":
+            print("Exiting...")
             break
         else:
             print("Invalid Choice. Choose one of the listed options.")
