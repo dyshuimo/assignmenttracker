@@ -153,6 +153,7 @@ def main(storagePath: str = "assignments.txt"):
                 print("Invalid Choice. Choose one of the listed options.")
         except FileCorruptedError:
             handleCorruptedFile(storagePath)
+            manager = DataManager(storagePath)
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
             exit()
