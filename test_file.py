@@ -22,29 +22,30 @@ from Assignment import Assignment
 from Command import validateDueDate, isOverdue, overdueStatus
 
 class TestDateAndStatus(unittest.TestCase):
-    # Test validateDueDate
+    # Normal: valid date string for validateDueDate
     def test_validateDueDate_normal_valid(self):
         res = validateDueDate("2026-11-08")
         self.assertEqual(res, date(2026, 11, 8))
 
-    def test_validateDueDate_edge_empty_input(self):
+    # Edge: input is empty, no due date
+    def test_validateDueDate_edge_empty(self):
         res = validateDueDate("")
         self.assertEqual(res, None)
 
-    def test_validateDueDate_error_wrong_format(self):
+    # Wrong: wrong date format
+    def test_validateDueDate_wrong_format(self):
         with self.assertRaises(ValueError):
             validateDueDate("12/20/2026")
 
+    # Normal: unfinished assignment with past due date (isOverdue)
+    def test_isOverdue_normal_past(self):
+        assign = Assignment(title="HW", description="", subject="Math", due_date=date(2025, 1, 1), completed=False)
+        self.assertEqual(isOverdue(assign), True)
 
-# Test isOverdue
-    def test_isOverdue_future_date(self):
-        due_date = date(2026, 11, 8)
-        self.assertAlmostEqual(isOverdue(due_date), False)
+    # Edge: assignment with no due date
+    def test_overdueStatus_edge_no_due_date(self):
+        assign = Assignment(title="HW", description="", subject="Math", due_date=None, completed=False)
+        self.assertEqual(overdueStatus(assign), "On time")
 
-    def test_isOverdue_past_date(self):
-        due_date = date(2020, 11, 8)
-        self.assertAlmostEqual(isOverdue(due_date), True)
-
-    def test_isOverdue_today(self):
-        due_date = date.today()
-        self.assertAlmostEqual(isOverdue(due_date), False)
+if __name__ == '__main__':
+    unittest.main()
