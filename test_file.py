@@ -1,21 +1,7 @@
-# #Automated testing
-
-# import unittest
-
-# def your_function_here(param):
-#     pass #placeholder
-
-# class TestYourFunction(unittest.TestCase):
-
-#     # ADD TESTS HERE
-#     # NOTE: use self.assertTrue, self.assertFalse or self.assertEqual
-#     pass #placeholder
-
-# if __name__ == '__main__':
-#     unittest.main()
-
-
-# Automated testing
+# ==============================================
+# Silver's tests: Time module (validateDueDate, isOverdue, overdueStatus)
+# ==============================================
+"""Tests for date validation, overdue checking and status display without interactive input."""
 import unittest
 from datetime import date
 from Assignment import Assignment
@@ -32,10 +18,10 @@ class TestDateAndStatus(unittest.TestCase):
         res = validateDueDate("")
         self.assertEqual(res, None)
 
-    # Wrong: wrong date format
-    def test_validateDueDate_wrong_format(self):
+    # Wrong: date missing leading zero (2026-11-8 instead of 2026-11-08)
+    def test_validateDueDate_wrong_missing_zero(self):
         with self.assertRaises(ValueError):
-            validateDueDate("12/20/2026")
+            validateDueDate("2026-11-8")
 
     # Normal: unfinished assignment with past due date (isOverdue)
     def test_isOverdue_normal_past(self):
@@ -46,6 +32,44 @@ class TestDateAndStatus(unittest.TestCase):
     def test_overdueStatus_edge_no_due_date(self):
         assign = Assignment(title="HW", description="", subject="Math", due_date=None, completed=False)
         self.assertEqual(overdueStatus(assign), "On time")
+
+
+# ==============================================
+# Frank's tests: Assignment storage, DataManager functions
+# ==============================================
+"""Tests for assignment storage without interactive input."""
+from DataIO import DataManager
+
+class TestingFunctions(unittest.TestCase):
+    def test_addAssignment(self):
+        assignments = [Assignment(title="Practice quiz", description= "25 multiple choices" ,subject="Biology")]
+        data_manager = DataManager("/dev/null")
+        data_manager.assignments = assignments
+        data_manager._writeToFile = assignments.copy
+        assignment = Assignment(title="Essay", description="2000 words esaay of comic book", subject="English")
+        data_manager.append(assignment)
+
+        self.assertEqual(len(assignments), 2)
+        self.assertEqual(assignments[1].title, "Essay")
+
+    def test_readAssignments(self):
+        assignments = [Assignment(title="Practice quiz", subject="Biology")]
+        data_manager = DataManager("/dev/null")
+        data_manager.assignments = assignments
+        data_manager._readFromFile = assignments.copy
+
+        self.assertEqual(data_manager.read(), assignments)
+
+    def test_removeAssignment(self):
+        assignments = [Assignment(title="Practice quiz", subject="Biology"), Assignment(title="Essay", subject="English")]
+        data_manager = DataManager("/dev/null")
+        data_manager.assignments = assignments
+        data_manager._writeToFile = assignments.copy
+        data_manager.delete(0)
+
+        self.assertEqual(len(assignments), 1)
+        self.assertEqual(assignments[0].title, "Essay")
+
 
 if __name__ == '__main__':
     unittest.main()
