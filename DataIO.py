@@ -1,14 +1,31 @@
-from Assignment import Assignment
-from datetime import date
+"""
+DataIO.py
 
-"""
-Write the file to the disk as assignments.txt
+Manager for File IO.
+Managed by Alex
+
+Note:
+Write the file to the assigned path
 both of my functions receive actual index, so remember to -1 from user input index
+
+Usage:
+    data_manager = DataManager("assignments.txt")
+    data_manager.append(assignment)
+    data_manager.delete(index)
+    data_manager.markCompleted(index)
 """
+
+from Assignment import Assignment
+
+from datetime import date
 
 
 class DataManager:
-    def __init__(self, path):
+    """
+    Abstract layer for file IO operations. Handles reading, appending, deleting, and marking assignments as completed
+    """
+
+    def __init__(self, path: str):
         self.assignments: list[Assignment] = []
         self.path = path
         self._readFromFile()

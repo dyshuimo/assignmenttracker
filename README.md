@@ -11,7 +11,7 @@ The program could check the due date and tells users whether an assignment is ov
 
 ## Example input/output
 
-Example: Show assignment
+### Silver's Example: Show assignment
 
 Input:
 Choose an option: 1
@@ -34,3 +34,39 @@ Subject: Computer Science
 Due Date: 2026-11-20
 Completed: Yes
 On time
+1. Download all files from the repository
+2. Open the repository in VSCode
+3. Make sure the program needs to be running in the latest Python version
+4. Open **main.py**
+5. Run main.py
+6. Follow the prompts in the terminal
+
+## Example input/output
+
+
+### Alex's example: Add assignment
+
+Input
+Choose option 2 in the menu.
+```bash
+Choose an option: 2
+```
+
+The program will prompt you for the assignment title
+
+Example input: 
+```bash
+Assignment title: Unit 3 Essay
+```
+
+And other details like description, subject, and due date. 
+```bash
+Description: Write an essay about the main themes of Unit 3
+Subject name: English
+Enter due date (YYYY-MM-DD, press ENTER for NO due date): 2026-11-08
+```
+
+Output
+```bash
+Assignment added successfully!
+```

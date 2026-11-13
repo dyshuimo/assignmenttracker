@@ -1,3 +1,9 @@
+"""
+Assignment.py
+Assignment dataclass for assignments' internal representation
+Managed by Alex
+"""
+
 from dataclasses import dataclass, field
 from datetime import date
 import uuid
