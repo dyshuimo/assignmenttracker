@@ -63,6 +63,7 @@ Output:
 
 ```bash
 Assignment deleted.
+```
 
 ### Alex's example: Add assignment
 
