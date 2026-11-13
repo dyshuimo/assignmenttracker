@@ -1,9 +1,13 @@
 from DataIO import DataManager
 from Assignment import Assignment
 from datetime import date
+import unittest
 
-data_manager = DataManager("assignments.txt")
-data_manager._testMethodClear()
+STORAGE_PATH = "test_assignments.txt"
+
+DataManager.unsafeWipeFile(STORAGE_PATH)
+data_manager = DataManager(STORAGE_PATH)
+
 assignments = [
     Assignment(
         title="Linear Algebra Problem Set 7",
@@ -57,12 +61,43 @@ assignments = [
     ),
 ]
 
-for assignment in assignments:
-    data_manager.append(assignment)
 
-data_manager.markCompleted(0)
+def addTestAssignments(data_manager: DataManager):
+    for assignment in assignments:
+        data_manager.append(assignment)
 
-for assignment in data_manager.assignments:
-    print(
-        f"ID: {assignment.id}, Title: {assignment.title}, Subject: {assignment.subject}, Due Date: {assignment.due_date}, Completed: {assignment.completed}"
-    )
+
+def addAndReadAssignments(data_manager: DataManager):
+    addTestAssignments(data_manager)
+    return data_manager.read()
+
+
+def isConsistent():
+    manager = DataManager(STORAGE_PATH)
+    returned_assignments = addAndReadAssignments(manager)
+    for assignment in returned_assignments:
+        if assignment not in assignments:
+            return False
+    return True
+
+
+class Test(unittest.TestCase):
+    def testFileSaveAndLoad(self):
+        self.assertTrue(isConsistent())
+
+    def testConversion(self):
+        self.assertEqual(
+            DataManager._assignmentToDict(assignments[0]),
+            {
+                "id": assignments[0].id,
+                "title": "Linear Algebra Problem Set 7",
+                "description": "Questions 1–12 on eigenvalues and diagonalization from Chapter 5.",
+                "subject": "MATH 221",
+                "due_date": "2026-11-10",
+                "completed": False,
+            },
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

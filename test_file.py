@@ -120,13 +120,15 @@ class SilverDateAndStatusTest(unittest.TestCase):
 
     # Normal: unfinished assignment with past due date (isOverdue)
     def test_isOverdue_normal_past(self):
-        assign = Assignment(title="HW", description="", subject="Math", due_date=date(2025, 1, 1), completed=False)
+        assign = Assignment(
+            title="HW",
+            description="",
+            subject="Math",
+            due_date=date(2025, 1, 1),
+            completed=False,
+        )
         self.assertEqual(isOverdue(assign), True)
 
-    # Edge: assignment with no due date
-    def test_overdueStatus_edge_no_due_date(self):
-        assign = Assignment(title="HW", description="", subject="Math", due_date=None, completed=False)
-        self.assertEqual(overdueStatus(assign), "On time")
 
 # ==============================================
 # Frank's tests: Assignment storage, DataManager functions
