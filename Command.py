@@ -1,12 +1,3 @@
-"""
-Command.py
-Handles the main command line loop
-Managed by Frank and Silver
-
-Usage:
-    main()
-"""
-
 from datetime import date
 from Assignment import Assignment
 from DataIO import DataManager, FileCorruptedError

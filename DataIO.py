@@ -1,31 +1,14 @@
-"""
-DataIO.py
-
-Manager for File IO.
-Managed by Alex
-
-Note:
-Write the file to the assigned path
-both of my functions receive actual index, so remember to -1 from user input index
-
-Usage:
-    data_manager = DataManager("assignments.txt")
-    data_manager.append(assignment)
-    data_manager.delete(index)
-    data_manager.markCompleted(index)
-"""
-
 from Assignment import Assignment
-
 from datetime import date
+
+"""
+Write the file to the disk as assignments.txt
+both of my functions receive actual index, so remember to -1 from user input index
+"""
 
 
 class DataManager:
-    """
-    Abstract layer for file IO operations. Handles reading, appending, deleting, and marking assignments as completed
-    """
-
-    def __init__(self, path: str):
+    def __init__(self, path):
         self.assignments: list[Assignment] = []
         self.path = path
         self._readFromFile()
