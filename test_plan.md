@@ -22,7 +22,7 @@ Alex: `DataManager._assignmentToDict()`, DataManager file save & load persistenc
 | T06 | Test DataManager append assignment | Initial list: [Assignment("Practice quiz", "25 multiple choices", "Biology")], new assignment: Assignment("Essay", "2000 words essay of comic book", "English") | List length becomes 2, new title is "Essay" | Normal | Pass | Frank |
 | T07 | Test DataManager read assignments | Assignment list: [Assignment("Practice quiz", subject="Biology")] | Return the same assignment list | Normal | Pass | Frank |
 | T08 | Test DataManager delete assignment at index 0 | List: [Assignment("Practice quiz"), Assignment("Essay")] | List length becomes 1, remaining title is "Essay" | Normal | Pass | Frank |
-| T09 | Test save and load assignments from file | Predefined list of 8 sample assignments | Assignments loaded from file match the original list | Normal | Pass | Alex |
+| T09 | Test save & load assignments from file | Predefined list of 8 sample assignments | Assignments loaded from file match the original list | Normal | Pass | Alex |
 | T10 | Test convert Assignment object to dictionary | assignments[0] (Linear Algebra Problem Set 7) | Dictionary with matching id, title, description, subject, due_date iso string, completed flag | Normal | Pass | Alex |
 
 ---

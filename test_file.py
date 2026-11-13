@@ -1,4 +1,3 @@
-# Automated testing
 import unittest
 from datetime import date
 from Assignment import Assignment
@@ -6,7 +5,7 @@ from Command import validateDueDate, isOverdue, overdueStatus
 from DataIO import DataManager
 
 # ==============================================
-# Alex's tests: Storage, save & load, serialization
+# Alex's tests: Storage, save & load
 # ==============================================
 """Tests for file persistence and Assignment <-> dict conversion."""
 STORAGE_PATH = "test_assignments.txt"
