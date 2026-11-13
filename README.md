@@ -13,8 +13,9 @@
 
 ## Example input/output
 
-### Example: Delete Task
+### Frank's Example: Delete Task
 
+```bash
 Assignments:
 Assignment: 1
 Title: Math worksheegt
@@ -23,11 +24,16 @@ Subject: MCV4U
 Due Date: 2026-10-23
 Completed: No
 Overdue
+```
 
 Input:
 
+```bash
 Assignment number to delete: 1
+```
 
 Output:
 
+```bash
 Assignment deleted.
+```
